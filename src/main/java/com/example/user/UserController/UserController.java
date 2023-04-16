@@ -1,6 +1,7 @@
 package com.example.user.UserController;
 
-import com.example.user.KafkaProducer.KafkaProducer;
+import com.example.user.KafkaProducer.JsonKafkaProducer;
+import com.example.user.KafkaProducer.StringKafkaProducer;
 import com.example.user.UserEntity.UserEntity;
 import com.example.user.UserService.UserService;
 import org.slf4j.Logger;
@@ -19,14 +20,19 @@ public class UserController {
     private static Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    private KafkaProducer kafkaProducer;
+    private StringKafkaProducer stringKafkaProducer;
     @Autowired
     private UserService userService;
 
-    public UserController(UserService userService, KafkaProducer kafkaProducer){
+    @Autowired
+    private JsonKafkaProducer jsonKafkaProducer;
+
+    public UserController(UserService userService, StringKafkaProducer stringKafkaProducer, JsonKafkaProducer jsonKafkaProducer){
         this.userService = userService;
-        this.kafkaProducer = kafkaProducer;
+        this.stringKafkaProducer = stringKafkaProducer;
+        this.jsonKafkaProducer = jsonKafkaProducer;
     }
+
 
     //$ bin/kafka-console-consumer.sh --topic newTopic --from-beginning --bootstrap-server localhost:9092
 
@@ -34,8 +40,14 @@ public class UserController {
     //http://localhost:8080/api/v1/user/sendMessage?message=Hi Nikhil Singh
     @GetMapping("/sendMessage")
     public ResponseEntity<String> sendMessage(@RequestParam("message") String message){
-        kafkaProducer.sendMessage(message);
-        return ResponseEntity.ok("sent message successfully!");
+        stringKafkaProducer.sendMessage(message);
+        return ResponseEntity.ok("Sent Message Successfully!");
+    }
+
+    @PostMapping("/sendJsonMessage")
+    public ResponseEntity<String> sendJsonMessage(@RequestBody UserEntity user){
+        jsonKafkaProducer.sendMessage(user);
+        return ResponseEntity.ok("Sent Json Message Successfully!");
     }
 
     @GetMapping("/retrieveAllUsers")
@@ -54,4 +66,5 @@ public class UserController {
             return new ResponseEntity<>(userService.saveAllData(user), HttpStatus.NOT_FOUND);
         }
     }
+
 }
