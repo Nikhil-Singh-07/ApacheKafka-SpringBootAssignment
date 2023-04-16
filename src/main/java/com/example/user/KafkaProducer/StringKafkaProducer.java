@@ -19,6 +19,6 @@ public class StringKafkaProducer {
 
     public void sendMessage(String message){
         logger.info(String.format("Message Sent Successfully -> %s", message));
-        kafkaTemplate.send("newTopic", message);
+        kafkaTemplate.send("newtopic", message);
     }
 }
