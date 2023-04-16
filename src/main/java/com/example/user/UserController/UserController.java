@@ -31,7 +31,7 @@ public class UserController {
     //$ bin/kafka-console-consumer.sh --topic newTopic --from-beginning --bootstrap-server localhost:9092
 
 
-    //http://localhost:8080/api/v1/user/sendMessage?message="Hi Nikhil Singh"
+    //http://localhost:8080/api/v1/user/sendMessage?message=Hi Nikhil Singh
     @GetMapping("/sendMessage")
     public ResponseEntity<String> sendMessage(@RequestParam("message") String message){
         kafkaProducer.sendMessage(message);
